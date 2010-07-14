@@ -37,3 +37,62 @@ h2. Examples
   $session->destroy();
   
 ?></code></pre>
+
+h2. Installation
+
+To install OOPS, there are only two really important steps that must be done, and those are to install the MySQL database and set the config settings. The MySQL database must follow the structure:
+
+<pre><code>
+create table session_table (
+ session_id varchar(40) default '0' not null,
+ ip_address varchar(16) default '0' not null,
+ user_agent varchar(50) not null,
+ last_activity int(10) unsigned default 0 not null,
+ user_data text not null,
+ primary key (session_id)
+);
+</code></pre>
+
+Once that is done, open the file @config.oops.php@ and change the values there to the desired settings.
+
+h2. Synopsis
+
+<pre><code>
+
+Constructor
+OopsObject Oops::__construct ( void )
+
+
+Check if there is a running session (eg. @Oops::start@ has been called)
+bool Oops::is_open ( void )
+
+
+Start a new session or load an old one
+void Oops::start ( void )
+
+
+Destroy the current session
+void Oops::destroy ( void )
+
+
+Regenerate the session id
+void Oops::regenerate ( void )
+
+
+Store a session value
+void Oops::set_value ( string $name, mixed $value )
+
+
+Get a stored session value
+mixed Oops::get_value ( string $name )
+
+
+Delete a stored session value
+void Oops::unset_value ( string $name )
+
+
+Read-only property containing the session id
+string Oops::session_id
+
+</code></pre>
+

@@ -16,41 +16,8 @@
 // make sure that the library is not being called directly
 if (__FILE__ == $_SERVER["SCRIPT_FILENAME"]) die("Bad Load Order");
 
-
-
-$oops_config = (object) array(
-
-/*
- * Database Configuration
- */
-
-	'database_name'  => 'dbOops',
-	
-	'database_table' => 'tblSessions',
-	
-	'database_host'  => 'localhost',
-	
-	'database_user'  => 'test',
-	
-	'database_pass'  => 'passwd',
-	
-/*
- * Session Configuration
- */
-	
-	'session_match_ipaddress' => false,
-	
-	'session_match_useragent' => true,
-	
-	'session_cookie'          => 'oops_session',
-	
-	'session_expire'          => 180,   // minutes
-	
-	'session_regeneration'    => true,
-	
-	'session_path'            => '/'
-
-);
+// make sure we have a valid default timezone
+@date_default_timezone_set(@date_default_timezone_get());
 
 
 
@@ -214,17 +181,14 @@ class Oops {
 		}
 		return false;
 	}
-	
-	protected function test_cookies() {
-		
-	}
 
 /*
  * Magic Methods
  */
 
 	public function __construct() {
-		$this->config = $GLOBALS['oops_config'];
+		require_once dirname(__FILE__) . "/config.oops.php";
+		$this->config = $config;
 		$this->exceptions = new OopsExceptionHandler;
 		$this->db_table = $this->config->database_name . "." . $this->config->session_db_table;
 		$this->user_data = $this->get_live_user_data();
@@ -232,6 +196,16 @@ class Oops {
 	
 	public function __destruct() {
 		$this->update_session();
+	}
+	
+	public function __get($name) {
+		switch ($name) {
+			case 'session_id':
+				return $this->session_id;
+				break;
+			default:
+				return null; break;
+		}
 	}
 
 /*
