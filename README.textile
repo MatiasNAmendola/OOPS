@@ -1,0 +1,39 @@
+h1. OOPS: Object Oriented Php Sessions
+
+Author: James Brumond
+Version: 0.1.1-rc
+
+Copyright 2010 James Brumond
+Dual licensed under MIT and GPL
+
+h2. Description
+
+An object oriented PHP session class using database storage.
+
+h2. Examples
+
+<pre><code><?php
+  
+  // initialize
+  $session = new Oops;
+  
+  // start a session
+  $session->start();
+  
+  // add a value to the session data
+  $session->set_value('name', 'value');
+  
+  // read a value from the session data
+  $name = $session->get_value('name');
+  
+  // remove a value from the session data
+  $session->unset_value('name');
+  
+  // regenerate the session id
+  // note: by default, this is done automatically every new request
+  $session->regenerate();
+  
+  // destroy the session
+  $session->destroy();
+  
+?></code></pre>
