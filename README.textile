@@ -1,7 +1,7 @@
 h1. OOPS: Object Oriented Php Sessions
 
 Author: James Brumond
-Version: 0.1.1-rc
+Version: 0.1.2-rc
 
 Copyright 2010 James Brumond
 Dual licensed under MIT and GPL
@@ -9,6 +9,12 @@ Dual licensed under MIT and GPL
 h2. Description
 
 An object oriented PHP session class using database storage.
+
+h3. Features
+
+* Easy to use, object oriented interface.
+* Fast, secure database storage.
+* Easy, one time configuration.
 
 h2. Examples
 

@@ -4,7 +4,7 @@
  * class.oops.php
  *
  * @software  OOPS - Object Oriented Php Sessions
- * @version   0.1.1-rc
+ * @version   0.1.2-rc
  * @author    James Brumond
  * @created   13 July, 2010
  * @updated   13 July, 2010
