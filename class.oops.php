@@ -22,11 +22,28 @@ if (__FILE__ == $_SERVER["SCRIPT_FILENAME"]) die("Bad Load Order");
 
 
 /*
+ * @const  OOPS_DIRECTORY
+ */
+	define("OOPS_DIRECTORY", dirname(__FILE__) . "/");
+
+/*
+ * @const  OOPS_CONFIG_FILE
+ */
+	define("OOPS_CONFIG_FILE", "config.oops.php");
+
+/*
+ * @const  OOPS_EXCEPTIONS
+ */
+	define("OOPS_EXCEPTIONS", "class.exceptions.php");
+
+
+
+/*
  * @include  class.exceptions.php
  * @class    OopsException
  * @class    OopsExceptionHandler
  */
-	require_once dirname(__FILE__) . "/class.exceptions.php";
+	require_once OOPS_DIRECTORY . OOPS_EXCEPTIONS;
 
 
 
@@ -36,6 +53,15 @@ if (__FILE__ == $_SERVER["SCRIPT_FILENAME"]) die("Bad Load Order");
  */
 
 class Oops {
+
+/*
+ * Statics
+ */
+	
+	public static function read_config() {
+		require_once OOPS_DIRECTORY . OOPS_CONFIG_FILE;
+		return $config;
+	}
 
 /*
  * Private Properties
@@ -149,16 +175,15 @@ class Oops {
 		}
 	}
 	
-	protected function open_session() {
+	protected function open_session($force_new = false) {
 		if (! $this->user_data)
 			$this->user_data = $this->get_live_user_data();
 		// get any existing session data from the database
-		if ($this->user_data->session_id) {
+		if ($this->user_data->session_id && ! $force_new) {
 			$from_database = $this->fetch_user_data($this->user_data->session_id);
 			if ($from_database
 			&& (! $this->config->session_match_useragent || $from_database->user_agent == $this->user_data->user_agent)
 			&& (! $this->config->session_match_ipaddress || $from_database->ip_address == $this->user_data->ip_address)) {
-				$from_database->last_activity = $_SERVER['REQUEST_TIME'];
 				return $from_database;
 			}
 		}
@@ -181,14 +206,19 @@ class Oops {
 		}
 		return false;
 	}
+	
+	protected function is_expired($last_activity) {
+		$timestamp = time();
+		$expiration = $this->config->session_expire * 60;
+		return (($last_activity + $expiration) >= $timestamp);
+	}
 
 /*
  * Magic Methods
  */
 
 	public function __construct() {
-		require_once dirname(__FILE__) . "/config.oops.php";
-		$this->config = $config;
+		$this->config = self::read_config();
 		$this->exceptions = new OopsExceptionHandler;
 		$this->db_table = $this->config->database_name . "." . $this->config->session_db_table;
 		$this->user_data = $this->get_live_user_data();
@@ -225,7 +255,11 @@ class Oops {
 	public function start() {
 		if (! $this->is_open()) {
 			$data = $this->open_session();
-			// check for expiration...
+			if ($this->is_expired($data->last_activity)) {
+				$this->destroy();
+				$data = $this->open_session(true);
+			}
+			$data->last_activity = $_SERVER['REQUEST_TIME'];
 			$this->user_data = $data;
 			$this->data = unserialize($data->user_data);
 			$this->session_id = $data->session_id;
@@ -261,5 +295,19 @@ class Oops {
 	}
 
 }
+
+
+
+/*
+ * Auto Initialize
+ */
+
+$_conf = Oops::read_config();
+if ($_conf->general_auto_init)
+	$GLOBALS[$_conf->general_auto_name] = new Oops;
+unset($_conf);
+
+
+
 
 ?>

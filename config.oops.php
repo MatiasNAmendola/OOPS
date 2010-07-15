@@ -3,6 +3,16 @@
 $config = (object) array(
 
 /*
+ * General Configuration
+ */
+	
+	// Auto-init Session Object
+	'general_auto_init'  => true,
+	
+	// Auto-init Global Name
+	'general_auto_name'  => 'Session',
+
+/*
  * Database Configuration
  */
 
@@ -34,7 +44,7 @@ $config = (object) array(
 	// What name should we use for the session id cookie?
 	'session_cookie'          => 'oops_session',
 	
-	// How many minutes before expire (not yet supported)
+	// How many minutes before expire
 	'session_expire'          => 180,
 	
 	// Auto-regenerate session id every new request?
