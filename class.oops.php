@@ -4,10 +4,10 @@
  * class.oops.php
  *
  * @software  OOPS - Object Oriented Php Sessions
- * @version   0.1.2-rc
+ * @version   0.1.3-rc
  * @author    James Brumond
  * @created   13 July, 2010
- * @updated   13 July, 2010
+ * @updated   15 July, 2010
  *
  * Copyright 2010 James Brumond
  * Dual licensed under MIT and GPL
@@ -59,7 +59,7 @@ class Oops {
  */
 	
 	public static function read_config() {
-		require_once OOPS_DIRECTORY . OOPS_CONFIG_FILE;
+		require OOPS_DIRECTORY . OOPS_CONFIG_FILE;
 		return $config;
 	}
 
@@ -220,7 +220,7 @@ class Oops {
 	public function __construct() {
 		$this->config = self::read_config();
 		$this->exceptions = new OopsExceptionHandler;
-		$this->db_table = $this->config->database_name . "." . $this->config->session_db_table;
+		$this->db_table = $this->config->database_name . "." . $this->config->database_table;
 		$this->user_data = $this->get_live_user_data();
 	}
 	
